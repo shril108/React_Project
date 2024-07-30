@@ -1,5 +1,9 @@
+import {useState} from 'react';
+
 
 function App() {
+
+  const [bold, setBold] = useState('false');
 
   const handleDelete = () =>{
     console.log("delete clicked");
@@ -13,9 +17,30 @@ function App() {
     console.log("cancel clicked");
   } 
 
-  const handleList = () =>{
-    console.log("list item clicked");
+  const handleList = (ele) =>{
+    setBold(true);
   }
+
+  let users = [
+    {
+      "Name": 'Jack Jackson',
+      "Email": 'jackj@abc.com',
+      "Pass": 'jackj',
+      bolded: bold
+    },
+    {
+      "Name": 'Katie Kates',
+      "Email": 'katiek@abc.com',
+      "Pass": 'katiek',
+      bolded: bold
+    },
+    {
+      "Name": 'Glen Glens',
+      "Email": 'gleng@abc.com',
+      "Pass": 'gleng',
+      bolded: bold
+    }
+]
 
 
   return (
@@ -32,23 +57,13 @@ function App() {
       </thead>
 
       <tbody>
-      <tr onClick = {handleList}>
-        <th>Jack Jackson</th>
-        <th>jackj@abc.com</th>
-        <th>jackj</th>
-      </tr>
-
-      <tr onClick = {handleList}>
-        <th>Katie Kates</th>
-        <th>katiek@abc.com</th>
-        <th>katiek</th>
-      </tr>
-
-      <tr onClick = {handleList}>
-        <th>Glen Glens</th>
-        <th>gleng@abc.com</th>
-        <th>gleng</th>
-      </tr>
+      {users.map((user, index) => (
+        <tr key = {index} onClick = {handleList}>
+          <th>{user.Name}</th>
+          <th>{user.Email}</th>
+          <th>{user.Pass}</th>
+        </tr>
+      ))}
       </tbody>
 
     </table>
@@ -57,18 +72,29 @@ function App() {
     <div className = "updates">
     <h3>Update</h3>
     <table>
+
+      <tbody>
       <tr>
-      <th>Name: </th>
-      <th>
-        <input></input>
-      </th>
+        <th>Name: </th>
+        <th>
+          <input></input>
+        </th>
       </tr>
 
-      <label>Email: </label>
-      <input></input>
+      <tr>
+        <th>Email: </th>
+        <th>
+          <input></input>
+        </th>
+      </tr>
 
-      <label>Pass: </label>
-      <input></input>
+      <tr>
+        <th>Pass: </th>
+        <th>
+          <input></input>
+        </th>
+      </tr>
+      </tbody>
     </table>
     </div>
 
