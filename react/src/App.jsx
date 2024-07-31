@@ -1,12 +1,46 @@
-import {useState} from 'react';
-
+import {useState, useEffect} from 'react';
+import {getAll, get, deleteById, post, put} from './memdb';
 
 function App() {
+  let users = [
+    {
+      "id": 0,
+      "Name": 'Jack Jackson',
+      "Email": 'jackj@abc.com',
+      "Pass": 'jackj',
+    },
+    {
+      "id": 1,
+      "Name": 'Katie Kates',
+      "Email": 'katiek@abc.com',
+      "Pass": 'katiek',
+    },
+    {
+      "id": 2,
+      "Name": 'Glen Glens',
+      "Email": 'gleng@abc.com',
+      "Pass": 'gleng',
+    }
+]
+  
+  const [selectedRow, setSelectedRow] = useState(-1);
+  const [name, setName] = useState();
+  const [email, setEmail] = useState();
+  const [pass, setPass] = useState();
+  const [customers, setCustomers] = useState([]);
+  let mode = "";
 
-  const [bold, setBold] = useState('false');
-
-  const handleDelete = () =>{
-    console.log("delete clicked");
+  const handleDelete = (row) =>{
+    if(row >= 0){
+      deleteById(row);
+      setName("");
+      setEmail("");
+      setPass("");
+      setSelectedRow(-2);
+    }
+    else{
+      Continue; 
+    }
   } 
 
   const handleSave = () =>{
@@ -14,33 +48,40 @@ function App() {
   } 
 
   const handleCancel = () =>{
-    console.log("cancel clicked");
+    setSelectedRow(-2);
+    setName("");
+    setEmail("");
+    setPass("");
   } 
 
-  const handleList = (ele) =>{
-    setBold(true);
+  const getCustomers = function(){
+    let data = getAll();
+    setCustomers(data);
   }
 
-  let users = [
-    {
-      "Name": 'Jack Jackson',
-      "Email": 'jackj@abc.com',
-      "Pass": 'jackj',
-      bolded: bold
-    },
-    {
-      "Name": 'Katie Kates',
-      "Email": 'katiek@abc.com',
-      "Pass": 'katiek',
-      bolded: bold
-    },
-    {
-      "Name": 'Glen Glens',
-      "Email": 'gleng@abc.com',
-      "Pass": 'gleng',
-      bolded: bold
+  const handleList = (id) =>{
+    if(selectedRow === id){
+      setSelectedRow(-1);
+      setName("Customer Name");
+      setEmail("name@company.com");
+      setPass("password");
     }
-]
+    else{
+      setSelectedRow(id);
+      setName(customers[id]["name"]);
+      setEmail(customers[id]["email"]);
+      setPass(customers[id]["password"]);
+      // console.log(name, email, pass);
+    }
+    if(selectedRow === -1){
+      setName(customers[id]["name"]);
+      setEmail(customers[id]["email"]);
+      setPass(customers[id]["password"]);
+    }
+    // console.log(selectedRow, id);
+  }
+
+  useEffect(getCustomers);
 
 
   return (
@@ -57,11 +98,15 @@ function App() {
       </thead>
 
       <tbody>
-      {users.map((user, index) => (
-        <tr key = {index} onClick = {handleList}>
-          <th>{user.Name}</th>
-          <th>{user.Email}</th>
-          <th>{user.Pass}</th>
+      {customers.map((customer, index) => (
+        <tr key = {index} onClick = {() => handleList(index)} style = {
+          {
+            cursor: 'pointer'
+          }
+        }>
+          <th style={{fontWeight: selectedRow === index ? 'bold' : 'normal'}}>{customer.name}</th>
+          <th style={{fontWeight: selectedRow === index ? 'bold' : 'normal'}}>{customer.email}</th>
+          <th style={{fontWeight: selectedRow === index ? 'bold' : 'normal'}}>{customer.password}</th>
         </tr>
       ))}
       </tbody>
@@ -77,28 +122,28 @@ function App() {
       <tr>
         <th>Name: </th>
         <th>
-          <input></input>
+          <input placeholder={name}></input>
         </th>
       </tr>
 
       <tr>
         <th>Email: </th>
         <th>
-          <input></input>
+          <input placeholder={email}></input>
         </th>
       </tr>
 
       <tr>
         <th>Pass: </th>
         <th>
-          <input></input>
+          <input placeholder={pass}></input>
         </th>
       </tr>
       </tbody>
     </table>
     </div>
 
-    <button onClick = {handleDelete}>Delete</button>
+    <button onClick = {() => handleDelete(selectedRow)}>Delete</button>
     <button onClick = {handleSave}>Save</button>
     <button onClick = {handleCancel}>Cancel</button>
       
