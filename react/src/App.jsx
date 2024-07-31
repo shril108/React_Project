@@ -24,11 +24,24 @@ function App() {
 ]
   
   const [selectedRow, setSelectedRow] = useState(-1);
-  const [name, setName] = useState();
-  const [email, setEmail] = useState();
-  const [pass, setPass] = useState();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
   const [customers, setCustomers] = useState([]);
   let mode = "";
+
+
+  const handleInputChange = function(event, thing) {
+    if(thing === "name"){
+      setName(event.target.value);
+    }
+    else if(thing === "email"){
+      setEmail(event.target.value);
+    }
+    else{
+      setPass(event.target.value);
+    }
+  }
 
   const handleDelete = (row) =>{
     if(row >= 0){
@@ -44,7 +57,23 @@ function App() {
   } 
 
   const handleSave = () =>{
-    console.log("save clicked");
+    let current = {
+      "id": -3,
+      "name": name,
+      "email": email,
+      "password": pass
+    };
+    if(selectedRow == -1 || selectedRow == -2){
+      post(current);
+      console.log(current);
+    }
+    else{
+      put(selectedRow, current);
+    }
+    setSelectedRow(-2);
+    setName("");
+    setEmail("");
+    setPass("");
   } 
 
   const handleCancel = () =>{
@@ -62,9 +91,9 @@ function App() {
   const handleList = (id) =>{
     if(selectedRow === id){
       setSelectedRow(-1);
-      setName("Customer Name");
-      setEmail("name@company.com");
-      setPass("password");
+      setName("");
+      setEmail("");
+      setPass("");
     }
     else{
       setSelectedRow(id);
@@ -82,7 +111,7 @@ function App() {
   }
 
   useEffect(getCustomers);
-
+  // console.log(mode);
 
   return (
     <div className = "temp">
@@ -113,30 +142,37 @@ function App() {
 
     </table>
     </div>
-
+    {/* name == "Customer Name" ? 'Add' : name == "" ? 'Add' : 'Update' */}
     <div className = "updates">
-    <h3>Update</h3>
+    <h3>Mode: {selectedRow == -1 ? 'Add' : selectedRow == -2 ? 'Add' : 'Update'}</h3>
     <table>
 
       <tbody>
       <tr>
         <th>Name: </th>
         <th>
-          <input placeholder={name}></input>
+          <input 
+          value={name} 
+          placeholder="Customer Name"
+          onChange={(e) => handleInputChange(e, "name")}></input>
         </th>
       </tr>
 
       <tr>
         <th>Email: </th>
         <th>
-          <input placeholder={email}></input>
+          <input value={email} 
+          placeholder="customer@abc.com"
+          onChange={(e) => handleInputChange(e, "email")}></input>
         </th>
       </tr>
 
       <tr>
         <th>Pass: </th>
         <th>
-          <input placeholder={pass}></input>
+          <input value={pass}
+          placeholder="pass"
+          onChange={(e) => handleInputChange(e, "pass")}></input>
         </th>
       </tr>
       </tbody>
