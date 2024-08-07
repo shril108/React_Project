@@ -12,6 +12,7 @@ function App() {
   const [customers, setCustomers] = useState([]);
 
 
+  
   const handleInputChange = function(event, thing) {
     if(thing === "name"){
       setName(event.target.value);
